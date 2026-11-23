@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Greenhouse Monitoring</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#eef5ee;color:#263b2b}
+header{background:#176b3a;color:white;padding:22px;text-align:center}
+header h1{font-size:27px} header p{margin-top:8px;color:#d8f5df}
+.container{max-width:1100px;margin:30px auto;padding:15px}
+.heading{margin-bottom:20px}.heading h2{color:#176b3a;margin-bottom:8px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.card{background:white;padding:25px;border-radius:15px;box-shadow:0 4px 12px #00000012}
+.card h3{color:#52745a;margin-bottom:15px}
+.value{font-size:32px;font-weight:bold;color:#176b3a}
+.status{margin-top:12px;font-weight:bold}
+.control{margin-top:30px;background:white;padding:25px;border-radius:15px}
+.control h2{color:#176b3a;margin-bottom:20px}
+.device{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 0;border-bottom:1px solid #ddd}
+button{padding:10px 20px;border:0;border-radius:8px;background:#168347;color:white;cursor:pointer}
+button:hover{background:#105c31}
+footer{text-align:center;padding:25px;color:#52745a}
+#updated{margin-top:15px;color:#777;font-size:13px}
+.note{margin-top:20px;padding:14px;background:#fff8df;border-left:4px solid #d6a32a;border-radius:8px;font-size:14px}
+@media(max-width:480px){header h1{font-size:22px}.device{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<header>
+  <h1>🌱 Smart Greenhouse Monitoring</h1>
+  <p>IoT Based Smart Agriculture System</p>
+</header>
+<main class="container">
+  <section class="heading">
+    <h2>Greenhouse Dashboard</h2>
+    <p>Monitor your plant environment.</p>
+  </section>
+  <section class="cards" aria-label="Sensor readings">
+    <article class="card"><h3>🌡 Temperature</h3><div class="value" id="temp">28°C</div><p class="status">Greenhouse temperature</p></article>
+    <article class="card"><h3>💧 Humidity</h3><div class="value" id="humidity">65%</div><p class="status">Air humidity</p></article>
+    <article class="card"><h3>🌿 Soil Moisture</h3><div class="value" id="soil">55%</div><p class="status" id="soilStatus">Soil condition: Good</p></article>
+    <article class="card"><h3>☀ Light Intensity</h3><div class="value" id="light">70%</div><p class="status">Light level</p></article>
+  </section>
+  <section class="control">
+    <h2>⚙ Device Control</h2>
+    <div class="device"><div><h3>💦 Water Pump</h3><p id="pumpStatus">OFF 🔴</p></div><button onclick="toggleDevice('pump')">Toggle Pump</button></div>
+    <div class="device"><div><h3>🌀 Cooling Fan</h3><p id="fanStatus">OFF 🔴</p></div><button onclick="toggleDevice('fan')">Toggle Fan</button></div>
+    <div class="device"><div><h3>💡 Grow Light</h3><p id="growStatus">OFF 🔴</p></div><button onclick="toggleDevice('grow')">Toggle Light</button></div>
+    <p id="updated">Last updated: --</p>
+  </section>
+  <p class="note"><strong>Demo mode:</strong> Sensor readings are simulated in your browser. This page is not connected to real ESP32/Arduino hardware. Device buttons change only the on-screen status.</p>
+</main>
+<footer>Smart Greenhouse Monitoring System | Mini Project</footer>
+<script>
+const devices={pump:false,fan:false,grow:false};
+function renderDevices(){
+  document.getElementById('pumpStatus').textContent=devices.pump?'ON 🟢':'OFF 🔴';
+  document.getElementById('fanStatus').textContent=devices.fan?'ON 🟢':'OFF 🔴';
+  document.getElementById('growStatus').textContent=devices.grow?'ON 🟢':'OFF 🔴';
+}
+function toggleDevice(name){devices[name]=!devices[name];renderDevices();}
+function updateData(){
+  const temp=Math.floor(Math.random()*10)+25;
+  const humidity=Math.floor(Math.random()*30)+50;
+  const soil=Math.floor(Math.random()*80)+10;
+  const light=Math.floor(Math.random()*100);
+  document.getElementById('temp').textContent=temp+'°C';
+  document.getElementById('humidity').textContent=humidity+'%';
+  document.getElementById('soil').textContent=soil+'%';
+  document.getElementById('light').textContent=light+'%';
+  document.getElementById('soilStatus').textContent=soil<35?'Soil condition: Dry':'Soil condition: Good';
+  devices.pump=soil<35;
+  devices.fan=temp>30;
+  devices.grow=light<30;
+  renderDevices();
+  document.getElementById('updated').textContent='Last updated: '+new Date().toLocaleTimeString();
+}
+updateData();
+setInterval(updateData,5000);
+</script>
+</body>
+</html>
